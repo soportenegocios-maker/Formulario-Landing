@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Solicitud B2B – Landing</title>
+
+<style>
+  :root {
+    --b2b-text: #333333;
+    --b2b-bg: #ffffff;
+    --b2b-border: #e5e7eb;
+    --b2b-accent: #2563eb;
+  }
+
+  body.b2b-landing-wrap {
+    margin: 0;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--b2b-text);
+    background: var(--b2b-bg);
+  }
+
+  .b2b-hero {
+    position: relative;
+    padding: clamp(32px, 5vw, 72px) 16px 24px;
+    display: grid;
+    gap: 28px;
+    max-width: 1280px;
+    margin: 0 auto;
+    background: transparent;
+  }
+
+  .b2b-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (min-width: 960px) {
+    .b2b-hero-grid { grid-template-columns: 1.1fr 0.9fr; gap: 40px; }
+  }
+
+  .b2b-eyebrow {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 999px;
+    font-size: 12px;
+    letter-spacing: .4px;
+    background: #f6f6f6;
+    margin-bottom: 12px;
+  }
+
+  .b2b-hero h1 {
+    margin: 0 0 12px;
+    font-size: clamp(28px, 4.6vw, 44px);
+    line-height: 1.15;
+    font-weight: 800;
+    letter-spacing: -.02em;
+  }
+
+  .b2b-sub {
+    margin: 0 0 18px;
+    font-size: clamp(14px, 1.6vw, 16px);
+    max-width: 60ch;
+  }
+
+  /* ===== Toast Popup ===== */
+  .b2b-toast {
+    position: fixed;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    width: min(760px, calc(100% - 24px));
+    z-index: 999999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+  }
+  .b2b-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+  .b2b-toast-inner {
+    background: #ffffff;
+    border: 1px solid var(--b2b-border);
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: 0 14px 40px rgba(0,0,0,.16);
+    display: grid;
+    grid-template-columns: 12px 1fr auto;
+    gap: 12px;
+    align-items: start;
+  }
+  .b2b-toast-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    margin-top: 5px;
+    background: #22c55e;
+  }
+  .b2b-toast.error .b2b-toast-dot { background: #ef4444; }
+  .b2b-toast.error .b2b-toast-inner { border-color: #fecaca; }
+
+  .b2b-toast-title {
+    margin: 0 0 2px;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  .b2b-toast-msg {
+    margin: 0;
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.35;
+  }
+  .b2b-toast-close {
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    padding: 2px 6px;
+    color: #6b7280;
+  }
+  .b2b-toast-close:hover { color: #111827; }
+
+  /* ===== Form ===== */
+  .b2b-form-card {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 24px;
+    border: 1px solid var(--b2b-border);
+    border-radius: 16px;
+    background: #fff;
+  }
+
+  .b2b-form-card h2 {
+    margin: 0 0 16px;
+    font-size: 24px;
+    line-height: 1.2;
+  }
+
+  .b2b-form-card p {
+    margin: 0 0 20px;
+    color: #4b5563;
+    font-size: 14px;
+  }
+</style>
+</head>
+
+<body class="b2b-landing-wrap">
+
+<!-- ===== Popup / Toast ===== -->
+<div id="b2b-toast" class="b2b-toast" role="status" aria-live="polite">
+  <div class="b2b-toast-inner">
+    <span class="b2b-toast-dot" aria-hidden="true"></span>
+    <div>
+      <p id="toast-title" class="b2b-toast-title">¡Solicitud enviada!</p>
+      <p id="toast-msg" class="b2b-toast-msg">Hemos recibido tu solicitud y te contactaremos en breve.</p>
+    </div>
+    <button type="button" id="b2b-toast-close" class="b2b-toast-close" aria-label="Cerrar">×</button>
+  </div>
+</div>
+
+<section class="b2b-hero" aria-label="Solicitud de información B2B">
+  <div class="b2b-hero-grid">
+
+    <div class="b2b-hero-copy">
+      <span class="b2b-eyebrow">Atención a empresas · Respuesta rápida</span>
+      <h1>Que tu negocio no pare, contacta con nosotros</h1>
+      <p class="b2b-sub">
+        Equipamiento, servicios gestionados y soporte técnico para proyectos de cualquier tamaño.
+        Cuéntanos qué necesitas y te enviaremos un presupuesto personalizado.
+      </p>
+    </div>
+
+    <div class="b2b-form-wrap">
+      <section class="b2b-form-card">
+        <h2>Solicita información para un presupuesto personalizado</h2>
+        <p>Rellena el formulario y registraremos tu solicitud. Te contactaremos lo antes posible.</p>
+
+        <form id="form-b2b" style="display: grid; gap: 12px;">
+          <div style="display:grid; gap:6px;">
+            <label for="b2b-nombre" style="font-weight:600;">Nombre completo*</label>
+            <input id="b2b-nombre" type="text" required placeholder="Tu nombre"
+                  style="padding:12px; border:1px solid #e5e7eb; border-radius:10px; outline:none;">
+          </div>
+
+          <div style="display:grid; gap:6px;">
+            <label for="b2b-empresa" style="font-weight:600;">Empresa</label>
+            <input id="b2b-empresa" type="text" placeholder="Nombre de la empresa"
+                  style="padding:12px; border:1px solid #e5e7eb; border-radius:10px; outline:none;">
+          </div>
+
+          <div style="display:grid; gap:6px;">
+            <label for="b2b-email" style="font-weight:600;">Email*</label>
+            <input id="b2b-email" type="email" required placeholder="tucorreo@empresa.com"
+                  style="padding:12px; border:1px solid #e5e7eb; border-radius:10px; outline:none;">
+          </div>
+
+          <div style="display:grid; gap:6px;">
+            <label for="b2b-telefono" style="font-weight:600;">Teléfono</label>
+            <input id="b2b-telefono" type="tel" placeholder="+34 600 000 000"
+                  style="padding:12px; border:1px solid #e5e7eb; border-radius:10px; outline:none;">
+          </div>
+
+          <div style="display:grid; gap:6px;">
+            <label for="b2b-mensaje" style="font-weight:600;">Mensaje</label>
+            <textarea id="b2b-mensaje" rows="4" placeholder="Cuéntanos qué necesitas"
+                      style="padding:12px; border:1px solid #e5e7eb; border-radius:10px; outline:none; resize:vertical;"></textarea>
+          </div>
+
+          <label style="display:flex; gap:10px; align-items:flex-start; font-size:14px; color:#374151;">
+            <input id="b2b-legal" type="checkbox" required style="margin-top:3px;">
+            <span>Acepto la <a href="https://www.pccomponentes.com/privacidad" target="_blank" style="color:#2563eb; text-decoration:underline;">política de privacidad</a> *</span>
+          </label>
+
+          <div id="b2b-error" style="display:none; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; padding:10px; border-radius:8px; font-size:14px;"></div>
+          <div id="b2b-ok" style="display:none; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; padding:10px; border-radius:8px; font-size:14px;"></div>
+
+          <button id="b2b-submit" type="submit"
+                  style="margin-top:8px; padding:12px 16px; border:none; border-radius:999px; background:#152339; color:#fff; font-weight:600; cursor:pointer;">
+            Enviar
+          </button>
+          <p style="margin:8px 0 0; font-size:12px; color:#6b7280;">* Campos obligatorios</p>
+        </form>
+      </section>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  var WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzY9XZlaWqj2W2LUwFWM5gPFsCbyHZGe8LJnqZmyGzhJeuAVTkClpJI_Qhmvvw8w7_x/exec";
+
+  var formUI = document.getElementById('form-b2b');
+  if (!formUI) return;
+
+  // Toast
+  var toast = document.getElementById('b2b-toast');
+  var toastTitle = document.getElementById('toast-title');
+  var toastMsg = document.getElementById('toast-msg');
+  var toastClose = document.getElementById('b2b-toast-close');
+  var toastTimer = null;
+
+  function showToast(title, msg, isError) {
+    if (!toast) return;
+    toast.classList.toggle('error', !!isError);
+    if (toastTitle) toastTitle.textContent = title || '';
+    if (toastMsg) toastMsg.textContent = msg || '';
+    toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 5200);
+  }
+
+  function hideToast() {
+    if (!toast) return;
+    toast.classList.remove('show');
+  }
+
+  if (toastClose) toastClose.addEventListener('click', hideToast);
+
+  function val(id) {
+    var el = document.getElementById(id);
+    return el ? el.value.trim() : '';
+  }
+  function isChecked(id) {
+    var el = document.getElementById(id);
+    return !!(el && el.checked);
+  }
+
+  var submitBtn = document.getElementById('b2b-submit');
+
+  formUI.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var nombre   = val('b2b-nombre');
+    var empresa  = val('b2b-empresa');
+    var email    = val('b2b-email');
+    var telefono = val('b2b-telefono');
+    var mensaje  = val('b2b-mensaje');
+    var okLegal  = isChecked('b2b-legal');
+
+    var err = document.getElementById('b2b-error');
+    var ok  = document.getElementById('b2b-ok');
+
+    if (!nombre || !email || !okLegal) {
+      if (err) {
+        err.textContent = 'Por favor, completa Nombre, Email y acepta la política de privacidad.';
+        err.style.display = 'block';
+      }
+      if (ok) ok.style.display = 'none';
+      showToast('Revisa el formulario', 'Faltan campos obligatorios.', true);
+      return;
+    }
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = '0.7';
+      submitBtn.style.cursor = 'not-allowed';
+    }
+
+    // Enviamos a Apps Script Web App
+    fetch(WEBAPP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        nombre: nombre,
+        empresa: empresa,
+        email: email,
+        telefono: telefono,
+        mensaje: mensaje
+      })
+    })
+    .then(function(res){ return res.text(); })
+    .then(function(){
+      if (ok) {
+        ok.textContent = '¡Gracias! Hemos recibido tu solicitud y te contactaremos en breve.';
+        ok.style.display = 'block';
+      }
+      if (err) err.style.display = 'none';
+
+      showToast('¡Solicitud enviada!', 'Hemos recibido tu solicitud y te contactaremos en breve.', false);
+      formUI.reset();
+    })
+    .catch(function(){
+      if (err) {
+        err.textContent = 'No se ha podido enviar en este momento. Por favor, inténtalo de nuevo.';
+        err.style.display = 'block';
+      }
+      if (ok) ok.style.display = 'none';
+      showToast('Error al enviar', 'Inténtalo de nuevo en unos segundos.', true);
+    })
+    .finally(function(){
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
